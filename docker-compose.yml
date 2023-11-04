@@ -6,18 +6,4 @@ services:
     volumes:
       - ./src/:/src/
     ports:
-      - "3000:3000"
-  postgres:
-    image: postgres
-    container_name: postgres
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    ports:
-      - "5432:5432"
-    volumes:
-      - psql_data:/var/lib/postgresql/data
-volumes:
-  psql_data:
-    driver: local
-    name: psql_data
+      - "8002:8002"

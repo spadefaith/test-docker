@@ -4,6 +4,6 @@ services:
     build: .
     container_name: testnodejs
     volumes:
-      - ./src/:/src/
+      - ./src/:/usr/app/src/
     ports:
       - "8002:8002"

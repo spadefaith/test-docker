@@ -2,7 +2,7 @@
 FROM node:16
 
 # Set the working directory in the container
-WORKDIR /
+WORKDIR /usr/app
 
 
 RUN curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm
@@ -16,7 +16,7 @@ RUN npm install -g nodemon
 RUN pnpm install --frozen-lockfile --prod
 
 # Copy the rest of the application code to the container
-COPY ./src .
+COPY ./src ./src
 
 # Expose the port your app will listen on
 EXPOSE 8002

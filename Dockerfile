@@ -1,25 +1,25 @@
-# Use an official Node.js runtime as the base image
-FROM node:16
+FROM node:19.0.0-alpine3.16 AS base
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
 
-# Set the working directory in the container
+RUN mkdir /usr/app
 WORKDIR /usr/app
 
-
-RUN curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm
-
-# Copy package.json and package-lock.json to the container
 COPY package*.json pnpm-lock.yaml nodemon.json ./
 
-RUN npm install -g nodemon
+FROM base AS prod-deps
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
 
-# Install application dependencies
-RUN pnpm install --frozen-lockfile --prod
+# FROM base AS build
+# RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+# RUN pnpm run build
 
-# Copy the rest of the application code to the container
-COPY ./src ./src
+FROM base
+COPY --from=prod-deps /usr/app/node_modules /usr/app/node_modules
+# COPY --from=build /app/dist /app/dist
 
-# Expose the port your app will listen on
+COPY . .
+
 EXPOSE 8002
-
-# Define the command to start your Node.js application
 CMD [ "pnpm", "start" ]
